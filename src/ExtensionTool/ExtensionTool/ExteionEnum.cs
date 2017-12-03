@@ -24,5 +24,17 @@ namespace ExtensionTool
                 }
             }
         }
+
+        public static bool CheckAuth<TEnum>(this TEnum authSource, TEnum source, Func<TEnum, TEnum, bool> selector)
+            where TEnum : struct, IConvertible
+        {
+            if (!typeof(TEnum).IsEnum)
+            {
+                throw new ArgumentException("TEnum must be enum");
+            }
+
+            //int? auth = authSource;
+            return selector(authSource, source);
+        }
     }
 }
