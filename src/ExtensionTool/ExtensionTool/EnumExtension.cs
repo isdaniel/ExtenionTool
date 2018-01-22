@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ExtensionTool
 {
-    public static class ExteionEnum
+    public static class EnumExtension
     {
         public static IEnumerable<string> GetEnumString<TEnum>(this TEnum source) where TEnum : struct, IConvertible
         {
