@@ -17,7 +17,7 @@ namespace ExtensionTool
         public static int YeaDifferent(this DateTime startDate,DateTime endDate)
         {
             DateTime timezone = new DateTime(1,1,1);
-
+            
             TimeSpan span = endDate - startDate;
 
             return (timezone + span).Year;
