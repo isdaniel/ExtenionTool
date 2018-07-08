@@ -24,6 +24,7 @@ namespace ExtensionTool
                     yield return e.ToString();
                 }
             }
+        
         }
 
         public static bool CheckAuth<TEnum>(this TEnum authSource, TEnum source, Func<TEnum, TEnum, bool> selector)
