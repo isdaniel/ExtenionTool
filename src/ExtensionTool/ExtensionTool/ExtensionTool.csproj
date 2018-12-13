@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssemblyExtension.cs" />
     <Compile Include="BaseTypeExtension.cs" />
     <Compile Include="DateTimeExtention.cs" />
     <Compile Include="EnumExtension.cs" />

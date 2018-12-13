@@ -57,6 +57,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssemblyExtensionTests.cs" />
     <Compile Include="ExteionEnumTest.cs" />
     <Compile Include="ExtensionAttributeTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
