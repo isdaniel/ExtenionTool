@@ -20,14 +20,5 @@ namespace ExtensionTool
         public static bool IsNormalClass(this Type type) {
             return type.IsClass && !type.IsAbstract;
         }
-
-        //public static IEnumerable<TResult> GetTypesByAssembly<TResult>(this Type type,string path)
-        //{
-        //    return Assembly.LoadFile(path).GetInstances<TResult>();
-        //}
-
-        //private static IEnumerable<TResult> GetInstances<TResult>(this Assembly ass) {
-        //    return
-        //}
     }
 }

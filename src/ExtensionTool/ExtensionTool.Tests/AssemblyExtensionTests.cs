@@ -20,7 +20,6 @@ namespace ExtensionTool.Tests
     [TestFixture]
     public class AssemblyExtensionTests
     {
-
         [Test]
         public void GetAll_InheritClassBase_GetbyCurrentAssembly_TwoClasses()
         {
@@ -32,6 +31,17 @@ namespace ExtensionTool.Tests
         {
             string assemblyPath = Assembly.GetExecutingAssembly().Location;
             AssertClassBase(Assembly.LoadFile(assemblyPath));
+        }
+
+        [Test]
+        public void GetAll_ClassA_GetbyPath_OneClasses()
+        {
+            string assemblyPath = Assembly.GetExecutingAssembly().Location;
+
+            var act = Assembly.LoadFile(assemblyPath).GetInstancesByAssembly<ClassA>();
+
+            Assert.AreEqual(act.FirstOrDefault().GetType(), typeof(ClassA));
+            Assert.IsTrue(act.Count() == 1);
         }
 
         [Test]
