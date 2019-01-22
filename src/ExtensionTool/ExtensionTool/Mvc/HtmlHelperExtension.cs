@@ -22,7 +22,7 @@ namespace ExtensionTool.Mvc
     
             IDictionary<string, object> htmlAttributes1 = HtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes);
 
-            if (IsReadOnly && !htmlAttributes1.ContainsKey("@readonly"))
+            if (IsReadOnly && !htmlAttributes1.ContainsKey("readonly"))
                 htmlAttributes1.Add("readonly","readonly");
 
             return InputExtensions.TextBoxFor(htmlHelper, expression, format, htmlAttributes1);

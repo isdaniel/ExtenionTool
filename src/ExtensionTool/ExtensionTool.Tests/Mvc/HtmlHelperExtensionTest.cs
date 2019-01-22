@@ -60,6 +60,25 @@ namespace ExtensionTool.Tests.Mvc
 
             Assert.AreEqual(expectHtmlString, actHtmlString);
         }
+
+        [TestCase(@"<input id=""Value"" name=""Value"" readonly=""test"" type=""text"" value=""test"" zz=""test"" />", true)]
+        [TestCase(@"<input id=""Value"" name=""Value"" readonly=""test"" type=""text"" value=""test"" zz=""test"" />", false)]
+        public void TextBoxForWithReadOnly(string expectHtmlString, bool isReadOnly)
+        {
+            HtmlHelperMock mock = new HtmlHelperMock();
+
+            ViewModel vm = new ViewModel()
+            {
+                Value = "test"
+            };
+
+            var htmlHelper = mock.GetHtmlHelperForModel(vm);
+
+            var actHtmlString = htmlHelper
+                .TextBoxFor(x => x.Value, isReadOnly, new { @readonly = "test",zz="test" }).ToHtmlString();
+
+            Assert.AreEqual(expectHtmlString, actHtmlString);
+        }
     }
 
     public class HtmlHelperMock
