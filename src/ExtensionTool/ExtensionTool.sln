@@ -9,7 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{0A124A8B-5
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{5DA8C8D3-2A33-4556-A340-EB55942271B1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThirdPartyExtension", "AutoMapperExtension\ThirdPartyExtension.csproj", "{81D04080-2F97-4F7F-8990-64586B63D8D6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThirdPartyExtension", "ThirdPartyExtension\ThirdPartyExtension.csproj", "{81D04080-2F97-4F7F-8990-64586B63D8D6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtensionTool.Tests", "..\..\test\ExtensionTool.Tests\ExtensionTool.Tests.csproj", "{406AF338-32DC-47DD-9BD4-6EE45E04E952}"
 EndProject
