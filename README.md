@@ -18,4 +18,17 @@ Here is a sample
 
 
 
+## `AddAutoMapperProfileFromAssembly`
+
+
+Register AutoMapper `Profile` class from assemblies.
+
+Here is a sample
+
+```
+ContainerBuilder builder = new ContainerBuilder();
+builder.AddAutoMapperProfileFromAssembly(typeof(AuditLogProfile).Assembly,...);
+```
+
+
 
