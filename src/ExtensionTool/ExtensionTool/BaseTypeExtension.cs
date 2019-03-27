@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 namespace ExtensionTool
 {
 
-    public static class TypeExtention
+    public static class BaseTypeExtension
     {
         /// <summary>
         /// 字串轉時間
@@ -98,6 +99,14 @@ namespace ExtensionTool
         public static string ObjectToString(this object o)
         {
             return o == null ? string.Empty : o.ToString();
+        }
+
+        public static bool IsCollectionType(this object o)
+        {
+            if (o == null)
+                throw new ArgumentNullException("parameter can't be null");
+
+            return o is IEnumerable;
         }
     }
 }

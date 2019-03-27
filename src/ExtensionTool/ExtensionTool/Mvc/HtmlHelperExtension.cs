@@ -15,17 +15,15 @@ namespace ExtensionTool.Mvc
         public static MvcHtmlString TextBoxFor<TModel, TProperty>(
             this HtmlHelper<TModel> htmlHelper,
             Expression<Func<TModel, TProperty>> expression,
-            bool IsReadOnly,
+            bool isReadOnly,
             object htmlAttributes)
         {
-            string format = (string)null;
-    
             IDictionary<string, object> htmlAttributes1 = HtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes);
 
-            if (IsReadOnly && !htmlAttributes1.ContainsKey("readonly"))
+            if (isReadOnly && !htmlAttributes1.ContainsKey("readonly"))
                 htmlAttributes1.Add("readonly","readonly");
 
-            return InputExtensions.TextBoxFor(htmlHelper, expression, format, htmlAttributes1);
+            return htmlHelper.TextBoxFor(expression, null, htmlAttributes1);
         }
     }
 }

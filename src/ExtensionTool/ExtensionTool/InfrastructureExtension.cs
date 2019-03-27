@@ -10,7 +10,7 @@ namespace ExtensionTool
 {
     public class WebDefaultCache : ICache
     {
-        Cache cacheContainer = HttpRuntime.Cache;
+        readonly Cache cacheContainer = HttpRuntime.Cache;
         public object Get(string key)
         {
             return cacheContainer.Get(key);
