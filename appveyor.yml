@@ -14,7 +14,7 @@ nuget:
 before_build:
 - cmd: nuget restore src\ExtensionTool\ExtensionTool.sln
 build:
-  project: src/AwesomeProxy.sln
+  project: src\ExtensionTool\ExtensionTool.sln
   publish_azure_webjob: true
   verbosity: minimal
 deploy:
