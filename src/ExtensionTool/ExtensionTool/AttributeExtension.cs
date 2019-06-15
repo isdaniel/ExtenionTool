@@ -37,14 +37,23 @@ namespace ExtensionTool
             return default(TValue);
         }
 
+        public static TAttribute GetAttribute<TAttribute>(
+                this PropertyInfo prop,
+                bool isInherit = true
+            ) 
+            where TAttribute : Attribute
+        {
+            return GetAttributeValue(prop, (TAttribute attr)=> attr, isInherit);
+        }
+
         public static TValue GetAttributeValue<TAttribute, TValue>(
                 this PropertyInfo prop,
                 Func<TAttribute, TValue> selector,
-                bool Isinherit = true
+                bool isInherit = true
             )
             where TAttribute : Attribute
         {
-            TAttribute attr = Attribute.GetCustomAttribute(prop, typeof(TAttribute), Isinherit) as TAttribute;
+            TAttribute attr = Attribute.GetCustomAttribute(prop, typeof(TAttribute), isInherit) as TAttribute;
             return GetValueOrDefault(selector, attr);
         }
 
