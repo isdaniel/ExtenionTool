@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Reflection;
 using Microsoft.SqlServer.Server;
 
 namespace ExtensionTool
@@ -14,6 +15,14 @@ namespace ExtensionTool
                 return new IntMetaDataProvider();
             else if (typeof(string) == t)
                 return new StringMetaDataProvider();
+            else if (typeof(DateTime) == t)
+                return new DateTimeMetaDataProvider();
+            else if (typeof(long) == t)
+                return new LongMetaDataProvider();
+            else if (typeof(short) == t)
+                return new ShortMetaDataProvider();
+            else if (typeof(byte) == t)
+                return new ByteMetaDataProvider();
 
             throw new Exception("Not support MetaDataProvider");
         }

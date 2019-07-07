@@ -15,7 +15,11 @@ namespace ExtensionTool
 
         internal object Value { get; set; }
 
-        internal abstract SqlMetaData GetSqlMetaData();
+        internal virtual SqlMetaData GetSqlMetaData()
+        {
+            return new SqlMetaData(Name, DbType);
+        }
+
         public abstract Action<SqlDataRecord> SetRecordValue { get; }
     }
 }
