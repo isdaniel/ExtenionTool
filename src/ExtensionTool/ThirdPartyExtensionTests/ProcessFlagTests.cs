@@ -17,16 +17,16 @@ namespace ThirdPartyExtension.Tests
     {
 
         [LockBy(Key = "Lock")]
-        public virtual void Locker1()
+        public virtual void Locker1(DateTime? dt)
         {
       
-            Console.WriteLine($"{DateTime.Now:MM/dd/yyyy HH:mm:ss fff}  Locker1");
+            Console.WriteLine($"{DateTime.Now:MM/dd/yyyy HH:mm:ss fff}  Locker1 {dt:MM/dd/yyyy HH:mm:ss fff}");
         }
 
         [LockBy(Key = "Lock")]
-        public virtual void Locker2()
+        public virtual void Locker2(DateTime? dt)
         {
-            Console.WriteLine($"{DateTime.Now:MM/dd/yyyy HH:mm:ss fff}  Locker2");
+            Console.WriteLine($"{DateTime.Now:MM/dd/yyyy HH:mm:ss fff}  Locker2  {dt:MM/dd/yyyy HH:mm:ss fff}");
         }
     }
 
@@ -60,18 +60,18 @@ namespace ThirdPartyExtension.Tests
 
             var task1 = Task.Run(() =>
             {
-                for (int i = 0; i < 1000; i++)
+                for (int i = 0; i < 100; i++)
                 {
-                    lockerContext.Locker1();
-                    Thread.Sleep(1);
+                    lockerContext.Locker1(DateTime.Now);
+                    Thread.Sleep(10);
                 }
             });
             var task2 = Task.Run(() =>
             {
-                for (int i = 0; i < 1000; i++)
+                for (int i = 0; i < 100; i++)
                 {
-                    lockerContext.Locker2();
-                    Thread.Sleep(1);
+                    lockerContext.Locker2(DateTime.Now);
+                    Thread.Sleep(10);
                 }
             });
 
