@@ -56,8 +56,8 @@ namespace ThirdPartyExtension
 
         public void Intercept(IInvocation invocation)
         {
-
-            if (invocation.Method.GetCustomAttribute(typeof(LockByAttribute), true) is LockByAttribute lockAttribute)
+            var lockAttribute = invocation.Method.GetCustomAttribute(typeof(LockByAttribute), true) as LockByAttribute;
+            if (lockAttribute!=null)
             {
                 var processFlag = _threadLocker.GetProcessFlag(lockAttribute.Key);
 

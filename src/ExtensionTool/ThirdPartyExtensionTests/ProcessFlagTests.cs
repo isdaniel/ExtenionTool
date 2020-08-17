@@ -39,7 +39,7 @@ namespace ThirdPartyExtension.Tests
         {
             ContainerBuilder builder = new ContainerBuilder();
             builder.RegisterType<LockInterceptor>().AsSelf();
-            builder.RegisterType<ThreadLocker>().SingleInstance();
+            builder.RegisterType<ThreadLocker>().SingleInstance();　
             builder.RegisterType<LockerContext>().EnableClassInterceptors();
             builder.RegisterType<ConsoleProvider>().As<ISysLog>().SingleInstance();
             _container = builder.Build();
