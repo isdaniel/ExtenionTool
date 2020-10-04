@@ -45,13 +45,6 @@ namespace ThirdPartyExtension.Tests
             _container = builder.Build();
         }
 
-        [TestMethod()]
-        public void StopProcessTest()
-        {
-            ProcessFlag flag = new ProcessFlag();
-            flag.StopProcess();
-            Assert.IsFalse(flag.IsProcessing);
-        }
 
         [TestMethod()]
         public void LockInterceptorTest()
