@@ -12,15 +12,22 @@ using Castle.DynamicProxy;
 namespace ThirdPartyExtension
 {
 
-    public class ThreadLocker
+    internal class ThreadLocker : Singleton<ThreadLocker>
     {
-       private ConcurrentDictionary<string, object> _processFlags = new ConcurrentDictionary<string, object>();
+        
+        private ConcurrentDictionary<string, object> _processFlagMapper;
 
-       public object GetProcessFlag(string key)
-       {
-           return _processFlags.GetOrAdd(key, new object());
-       }
+        private ThreadLocker()
+        {
+            _processFlagMapper = new ConcurrentDictionary<string, object>();
+        }
+
+        public object GetProcessFlag(string key)
+        {
+            return  _processFlagMapper.GetOrAdd(key,new object());
+        }
     }
+    
 
     public class LockByAttribute : Attribute
     {
@@ -29,11 +36,9 @@ namespace ThirdPartyExtension
 
     public class LockInterceptor : IInterceptor
     {
-        private ThreadLocker _threadLocker;
         private ISysLog _log;
-        public LockInterceptor(ThreadLocker threadLocker,ISysLog log)
+        public LockInterceptor(ISysLog log)
         {
-            this._threadLocker = threadLocker;
             _log = log;
         }
 
@@ -42,7 +47,7 @@ namespace ThirdPartyExtension
             var lockAttribute = invocation.Method.GetCustomAttribute(typeof(LockByAttribute), true) as LockByAttribute;
             if (lockAttribute!=null)
             {
-                var lockObj = _threadLocker.GetProcessFlag(lockAttribute.Key);
+                var lockObj = ThreadLocker.Instance.GetProcessFlag(lockAttribute.Key);
 
                 try
                 {

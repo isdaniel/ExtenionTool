@@ -65,6 +65,7 @@
   <ItemGroup>
     <Compile Include="AutoMapperExtensions.cs" />
     <Compile Include="ISysLog.cs" />
+    <Compile Include="Singleton.cs" />
     <Compile Include="ThreadLocker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
