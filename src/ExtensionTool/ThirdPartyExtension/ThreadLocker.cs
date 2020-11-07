@@ -15,16 +15,16 @@ namespace ThirdPartyExtension
     internal class ThreadLocker : Singleton<ThreadLocker>
     {
         
-        private ConcurrentDictionary<string, object> _processFlagMapper;
+        private ConcurrentDictionary<string, ReaderWriterLockSlim> _processFlagMapper;
 
         private ThreadLocker()
         {
-            _processFlagMapper = new ConcurrentDictionary<string, object>();
+            _processFlagMapper = new ConcurrentDictionary<string, ReaderWriterLockSlim>();
         }
 
-        public object GetProcessFlag(string key)
+        public ReaderWriterLockSlim GetProcessFlag(string key)
         {
-            return  _processFlagMapper.GetOrAdd(key,new object());
+            return  _processFlagMapper.GetOrAdd(key,new ReaderWriterLockSlim());
         }
     }
     
@@ -32,6 +32,35 @@ namespace ThirdPartyExtension
     public class LockByAttribute : Attribute
     {
         public string Key { get; set; }
+
+        public LockMode Mode { get; set; } = LockMode.XLock;
+    }
+
+    public enum LockMode
+    {
+        SharedLock,
+        XLock
+    }
+
+    internal class LockFactory {
+        private ReaderWriterLockSlim LockObj { get; set; }
+
+        internal LockFactory(ReaderWriterLockSlim _lockObj)
+        {
+            LockObj = _lockObj;
+        }
+
+        public LockProviderBase GetLockProvider (LockMode lockMode)
+        {
+            if (lockMode == LockMode.SharedLock)
+            {
+                return new SharedLockProvider(LockObj);
+            }
+            else
+            {
+                return new XLockProvider(LockObj);
+            }
+        }
     }
 
     public class LockInterceptor : IInterceptor
@@ -45,25 +74,24 @@ namespace ThirdPartyExtension
         public void Intercept(IInvocation invocation)
         {
             var lockAttribute = invocation.Method.GetCustomAttribute(typeof(LockByAttribute), true) as LockByAttribute;
-            if (lockAttribute!=null)
+            if (lockAttribute !=null && !string.IsNullOrEmpty(lockAttribute.Key))
             {
                 var lockObj = ThreadLocker.Instance.GetProcessFlag(lockAttribute.Key);
+                LockProviderBase lockProvider = new LockFactory(lockObj).GetLockProvider(lockAttribute.Mode);
 
                 try
                 {
-
-                    lock (lockObj)
-                    {
-                        _log.Info($"{DateTime.Now:MM/dd/yyyy HH:mm:ss fff} processing {invocation.Method.Name}");
-                        invocation.Proceed();
-                    }
+                    lockProvider.AddLock();
+                    invocation.Proceed();
                 }
                 catch (Exception e)
                 {
-                    _log.Exception("Something wrong!",e);
+                    _log.Exception("Something wrong!", e);
                     throw e;
                 }
-
+                finally {
+                    lockProvider.RealseLock();
+                }
             }
             else
             {

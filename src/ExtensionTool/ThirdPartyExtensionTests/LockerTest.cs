@@ -12,21 +12,22 @@ namespace ThirdPartyExtensionTests
     [Intercept(typeof(LockInterceptor))]
     public partial class LockerContext : ILockerContext
     {
-        [LockBy(Key = "LockKey")]
+        [LockBy(Key = "LockKey", Mode = LockMode.SharedLock)]
         public virtual void MethodA ()
         {
+            //ReaderWriterLockSlim rwLock = new ReaderWriterLockSlim();
             Console.WriteLine($"{DateTime.Now:HH:mm:ss fff} MethodA");
             Thread.Sleep(100);
         }
 
-        [LockBy(Key = "LockKey")]
+        [LockBy(Key = "LockKey",Mode = LockMode.SharedLock)]
         public virtual  void MethodA1()
         {
             Console.WriteLine($"{DateTime.Now:HH:mm:ss fff} MethodA1");
             Thread.Sleep(100);
         }
 
-        [LockBy(Key = "LockKey")]
+        [LockBy(Key = "LockKey", Mode = LockMode.SharedLock)]
         public virtual  void MethodA2()
         {
             Console.WriteLine($"{DateTime.Now:HH:mm:ss fff} MethodA2");
@@ -37,7 +38,7 @@ namespace ThirdPartyExtensionTests
         public virtual  void MethodB()
         {
             Console.WriteLine($"{DateTime.Now:HH:mm:ss fff} MethodB");
-            Thread.Sleep(100);
+            Thread.Sleep(200);
         }
     }
 
@@ -106,8 +107,9 @@ namespace ThirdPartyExtensionTests
                 lockerContext.MethodA1();
                 taskList.Add(Task.Factory.StartNew(() => { lockerContext.MethodA(); }));
                 taskList.Add(Task.Factory.StartNew(() => { lockerContext.MethodA1(); }));
+                //taskList.Add(Task.Factory.StartNew(() => { lockerContext.MethodA2(); }));                
                 taskList.Add(Task.Factory.StartNew(() => { lockerContext.MethodB(); }));
-                
+
             }
 
             Task.WaitAll(taskList.ToArray());
