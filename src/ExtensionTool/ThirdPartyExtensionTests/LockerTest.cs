@@ -27,10 +27,10 @@ namespace ThirdPartyExtensionTests
             Thread.Sleep(100);
         }
 
-        [LockBy(Key = "LockKey", Mode = LockMode.SharedLock)]
-        public virtual  void MethodA2()
+        [LockBy(Key = "LockKey")]
+        public virtual  void MethodB1()
         {
-            Console.WriteLine($"{DateTime.Now:HH:mm:ss fff} MethodA2");
+            Console.WriteLine($"{DateTime.Now:HH:mm:ss fff} MethodB1");
             Thread.Sleep(100);
         }
 
@@ -47,7 +47,7 @@ namespace ThirdPartyExtensionTests
         void MethodA();
         void MethodA1();
         
-        void MethodA2();
+        void MethodB1();
         
         void MethodB();
     }
@@ -104,10 +104,9 @@ namespace ThirdPartyExtensionTests
 
             for (int i = 0; i < 10; i++)
             {
-                lockerContext.MethodA1();
                 taskList.Add(Task.Factory.StartNew(() => { lockerContext.MethodA(); }));
                 taskList.Add(Task.Factory.StartNew(() => { lockerContext.MethodA1(); }));
-                //taskList.Add(Task.Factory.StartNew(() => { lockerContext.MethodA2(); }));                
+                taskList.Add(Task.Factory.StartNew(() => { lockerContext.MethodB1(); }));                
                 taskList.Add(Task.Factory.StartNew(() => { lockerContext.MethodB(); }));
 
             }

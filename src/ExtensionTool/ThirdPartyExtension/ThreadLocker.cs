@@ -73,15 +73,21 @@ namespace ThirdPartyExtension
 
         public void Intercept(IInvocation invocation)
         {
-            var lockAttribute = invocation.Method.GetCustomAttribute(typeof(LockByAttribute), true) as LockByAttribute;
-            if (lockAttribute !=null && !string.IsNullOrEmpty(lockAttribute.Key))
+            var lockAttributes = invocation.Method.GetCustomAttributes(typeof(LockByAttribute), true) as LockByAttribute[];
+            var lockProviders = lockAttributes.Where(lockAttribute => lockAttribute != null && !string.IsNullOrEmpty(lockAttribute.Key))
+                .Select(lockAttribute => {
+                    var lockObj = ThreadLocker.Instance.GetProcessFlag(lockAttribute.Key);
+                    LockProviderBase lockProvider = new LockFactory(lockObj).GetLockProvider(lockAttribute.Mode);
+                    return lockProvider;
+                });
+            if (lockProviders.Any())
             {
-                var lockObj = ThreadLocker.Instance.GetProcessFlag(lockAttribute.Key);
-                LockProviderBase lockProvider = new LockFactory(lockObj).GetLockProvider(lockAttribute.Mode);
-
                 try
                 {
-                    lockProvider.AddLock();
+                    foreach (var lockProvider in lockProviders)
+                    {
+                        lockProvider.AddLock();
+                    }
                     invocation.Proceed();
                 }
                 catch (Exception e)
@@ -90,7 +96,10 @@ namespace ThirdPartyExtension
                     throw e;
                 }
                 finally {
-                    lockProvider.RealseLock();
+                    foreach (var lockProvider in lockProviders)
+                    {
+                        lockProvider.RealseLock();
+                    }
                 }
             }
             else
