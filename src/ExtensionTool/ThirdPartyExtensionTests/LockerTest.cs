@@ -4,41 +4,47 @@ using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extras.DynamicProxy;
+using Castle.Core.Internal;
 using NUnit.Framework;
 using ThirdPartyExtension;
 
 namespace ThirdPartyExtensionTests
 {
     [Intercept(typeof(LockInterceptor))]
-    public partial class LockerContext : ILockerContext
+    public class LockerContext : ILockerContext
     {
-        [LockBy(Key = "LockKey", Mode = LockMode.SharedLock)]
+        [LockBy(Key = "A", Mode = LockMode.SharedLock)]
         public virtual void MethodA ()
         {
+            Thread.Sleep(100);
             //ReaderWriterLockSlim rwLock = new ReaderWriterLockSlim();
-            Console.WriteLine($"{DateTime.Now:HH:mm:ss fff} MethodA");
+            Console.WriteLine($"{DateTime.Now:HH:mm:ss fff} MethodA Done");
             Thread.Sleep(100);
         }
 
-        [LockBy(Key = "LockKey",Mode = LockMode.SharedLock)]
-        public virtual  void MethodA1()
+        [LockBy(Key = "A")]
+        public virtual void MethodA1()
         {
-            Console.WriteLine($"{DateTime.Now:HH:mm:ss fff} MethodA1");
+            Thread.Sleep(100);
+            Console.WriteLine($"{DateTime.Now:HH:mm:ss fff} MethodA1 Done");
             Thread.Sleep(100);
         }
 
-        [LockBy(Key = "LockKey")]
-        public virtual  void MethodB1()
+        [LockBy(Key = "A")]
+        [LockBy(Key = "B")]
+        public virtual void MethodB_A()
         {
-            Console.WriteLine($"{DateTime.Now:HH:mm:ss fff} MethodB1");
+            Thread.Sleep(100);
+            Console.WriteLine($"{DateTime.Now:HH:mm:ss fff} MethodB_A Done");
             Thread.Sleep(100);
         }
 
-        [LockBy(Key = "LockKey")]
+        [LockBy(Key = "B")]
         public virtual  void MethodB()
         {
-            Console.WriteLine($"{DateTime.Now:HH:mm:ss fff} MethodB");
-            Thread.Sleep(200);
+            Thread.Sleep(100);
+            Console.WriteLine($"{DateTime.Now:HH:mm:ss fff} MethodB Done");
+            Thread.Sleep(100);
         }
     }
 
@@ -47,7 +53,7 @@ namespace ThirdPartyExtensionTests
         void MethodA();
         void MethodA1();
         
-        void MethodB1();
+        void MethodB_A();
         
         void MethodB();
     }
@@ -102,11 +108,11 @@ namespace ThirdPartyExtensionTests
             
             List<Task> taskList =new List<Task>();
 
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 20; i++)
             {
                 taskList.Add(Task.Factory.StartNew(() => { lockerContext.MethodA(); }));
                 taskList.Add(Task.Factory.StartNew(() => { lockerContext.MethodA1(); }));
-                taskList.Add(Task.Factory.StartNew(() => { lockerContext.MethodB1(); }));                
+                taskList.Add(Task.Factory.StartNew(() => { lockerContext.MethodB_A(); }));                
                 taskList.Add(Task.Factory.StartNew(() => { lockerContext.MethodB(); }));
 
             }

@@ -28,12 +28,14 @@ namespace ThirdPartyExtension
         }
     }
     
-
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
     public class LockByAttribute : Attribute
     {
         public string Key { get; set; }
 
         public LockMode Mode { get; set; } = LockMode.XLock;
+
+        public int Order{ get; set; }
     }
 
     public enum LockMode
@@ -73,15 +75,13 @@ namespace ThirdPartyExtension
 
         public void Intercept(IInvocation invocation)
         {
+            var methodName = invocation.Method.Name;
             var lockAttributes = invocation.Method.GetCustomAttributes(typeof(LockByAttribute), true) as LockByAttribute[];
-            var lockProviders = lockAttributes.Where(lockAttribute => lockAttribute != null && !string.IsNullOrEmpty(lockAttribute.Key))
-                .Select(lockAttribute => {
-                    var lockObj = ThreadLocker.Instance.GetProcessFlag(lockAttribute.Key);
-                    LockProviderBase lockProvider = new LockFactory(lockObj).GetLockProvider(lockAttribute.Mode);
-                    return lockProvider;
-                });
-            if (lockProviders.Any())
+
+
+            if (IsMarkLockLockAttribute(lockAttributes))
             {
+                var lockProviders = GetLockProviders(lockAttributes);
                 try
                 {
                     foreach (var lockProvider in lockProviders)
@@ -98,8 +98,9 @@ namespace ThirdPartyExtension
                 finally {
                     foreach (var lockProvider in lockProviders)
                     {
-                        lockProvider.RealseLock();
+                        lockProvider.ReleaseLock();
                     }
+                    _log.Info($"{DateTime.Now:HH:mm:ss fff} {methodName} Release Lock");
                 }
             }
             else
@@ -107,6 +108,30 @@ namespace ThirdPartyExtension
                 invocation.Proceed();
             }
            
+        }
+
+        
+        private bool IsValidateLockAttribute(LockByAttribute lockAttribute)
+        {
+            return lockAttribute != null && !string.IsNullOrEmpty(lockAttribute.Key);
+        }
+
+        private bool IsMarkLockLockAttribute (LockByAttribute[] attrs)
+        {
+            return attrs != null && attrs.Any();
+        }
+
+        private List<LockProviderBase> GetLockProviders(LockByAttribute[] lockAttributes)
+        {
+            var lockProviders = lockAttributes.Where(IsValidateLockAttribute)
+                .Select(lockAttribute =>
+                {
+                    var lockObj = ThreadLocker.Instance.GetProcessFlag(lockAttribute.Key);
+                    LockProviderBase lockProvider = new LockFactory(lockObj).GetLockProvider(lockAttribute.Mode);
+                    return lockProvider;
+                }).ToList();
+
+            return lockProviders;
         }
     }
 

@@ -12,7 +12,7 @@ namespace ThirdPartyExtension
 
         public abstract void AddLock();
 
-        public abstract void RealseLock();
+        public abstract void ReleaseLock();
     }
 
     public class SharedLockProvider : LockProviderBase
@@ -26,7 +26,7 @@ namespace ThirdPartyExtension
             LockObj.EnterReadLock();
         }
 
-        public override void RealseLock()
+        public override void ReleaseLock()
         {
             LockObj.ExitReadLock();
         }
@@ -43,7 +43,7 @@ namespace ThirdPartyExtension
             LockObj.EnterWriteLock();
         }
 
-        public override void RealseLock()
+        public override void ReleaseLock()
         {
             LockObj.ExitWriteLock();
         }
