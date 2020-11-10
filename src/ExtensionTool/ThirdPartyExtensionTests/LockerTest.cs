@@ -10,41 +10,40 @@ using ThirdPartyExtension;
 
 namespace ThirdPartyExtensionTests
 {
-    [Intercept(typeof(LockInterceptor))]
+    [Intercept(typeof(LockerInterceptor))]
     public class LockerContext : ILockerContext
     {
-        [LockBy(Key = "A", Mode = LockMode.SharedLock)]
+        [Lock(Key = "A", Mode = LockMode.SharedLock)]
         public virtual void MethodA ()
         {
-            Thread.Sleep(100);
-            //ReaderWriterLockSlim rwLock = new ReaderWriterLockSlim();
+            Thread.Sleep(5);
             Console.WriteLine($"{DateTime.Now:HH:mm:ss fff} MethodA Done");
-            Thread.Sleep(100);
+            Thread.Sleep(5);
         }
 
-        [LockBy(Key = "A")]
+        [Lock(Key = "A")]
         public virtual void MethodA1()
         {
-            Thread.Sleep(100);
+            Thread.Sleep(5);
             Console.WriteLine($"{DateTime.Now:HH:mm:ss fff} MethodA1 Done");
-            Thread.Sleep(100);
+            Thread.Sleep(5);
         }
 
-        [LockBy(Key = "A")]
-        [LockBy(Key = "B")]
+        [Lock(Key = "A")]
+        [Lock(Key = "B")]
         public virtual void MethodB_A()
         {
-            Thread.Sleep(100);
+            Thread.Sleep(5);
             Console.WriteLine($"{DateTime.Now:HH:mm:ss fff} MethodB_A Done");
-            Thread.Sleep(100);
+            Thread.Sleep(5);
         }
 
-        [LockBy(Key = "B")]
+        [Lock(Key = "B")]
         public virtual  void MethodB()
         {
-            Thread.Sleep(100);
+            Thread.Sleep(5);
             Console.WriteLine($"{DateTime.Now:HH:mm:ss fff} MethodB Done");
-            Thread.Sleep(100);
+            Thread.Sleep(5);
         }
     }
 
@@ -65,7 +64,7 @@ namespace ThirdPartyExtensionTests
         public static void Register()
         {
             ContainerBuilder builder = new ContainerBuilder();
-            builder.RegisterType<LockInterceptor>().AsSelf();
+            builder.RegisterType<LockerInterceptor>().AsSelf();
             builder.RegisterType<LockerContext>().As<ILockerContext>().EnableClassInterceptors();
             builder.RegisterType<ConsoleProvider>().As<ISysLog>().SingleInstance();
             Container = builder.Build();
@@ -108,7 +107,7 @@ namespace ThirdPartyExtensionTests
             
             List<Task> taskList =new List<Task>();
 
-            for (int i = 0; i < 20; i++)
+            for (int i = 0; i < 10; i++)
             {
                 taskList.Add(Task.Factory.StartNew(() => { lockerContext.MethodA(); }));
                 taskList.Add(Task.Factory.StartNew(() => { lockerContext.MethodA1(); }));

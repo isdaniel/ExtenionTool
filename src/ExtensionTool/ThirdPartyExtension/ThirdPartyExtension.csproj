@@ -65,15 +65,22 @@
   <ItemGroup>
     <Compile Include="AutoMapperExtensions.cs" />
     <Compile Include="ISysLog.cs" />
-    <Compile Include="LockProviderBase.cs" />
+    <Compile Include="LockService\LockAttribute.cs" />
+    <Compile Include="LockService\LockFactory.cs" />
+    <Compile Include="LockService\LockerInterceptor.cs" />
+    <Compile Include="LockService\LockMode.cs" />
+    <Compile Include="LockService\LockProviderBase.cs" />
+    <Compile Include="LockService\SharedLockProvider.cs" />
+    <Compile Include="LockService\XLockProvider.cs" />
     <Compile Include="Singleton.cs" />
-    <Compile Include="ThreadLocker.cs" />
+    <Compile Include="LockService\ThreadLocker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
